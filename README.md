@@ -15,7 +15,7 @@ https://user-images.githubusercontent.com/23612580/164959572-4ab5adad-eed4-46ed-
 use ({
     'Mofiqul/trld.nvim',
     config = function()
-        require('trld').setup()
+        require('trld').setup({position = 'top'}) -- position: 'top' | 'bottom', default 'top'
     end
 })
 ```
