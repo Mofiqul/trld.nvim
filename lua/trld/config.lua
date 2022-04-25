@@ -1,45 +1,15 @@
-# trld.nvim
+local M = {}
 
-Plugin to display neovim line diagnostics on top right conrner with new line
-
-## Demo
-
-
-https://user-images.githubusercontent.com/23612580/164959572-4ab5adad-eed4-46ed-b011-c75700688dfa.mp4
-
-
-## Installation
-
-```lua
--- Packer:
-use {'Mofiqul/trld.nvim'}
-```
-
-
-## Configuration
-```lua
-  require('trld').setup {
-    -- where to render the diagnostics. 'top' | 'bottom'
-    position = 'top',
-
-    -- if this plugin should execute it's builtin auto commands
+-- default config
+M.default_config = {
+    position = "top",
     auto_cmds = true,
-
-    -- diagnostics highlight group names
     highlights = {
         error = "DiagnosticFloatingError",
         warn =  "DiagnosticFloatingWarn",
         info =  "DiagnosticFloatingInfo",
         hint =  "DiagnosticFloatingHint",
     },
-
-    -- diagnostics formatter. must return
-    -- {
-    --   { "String", "Highlight Group Name"},
-    --   { "String", "Highlight Group Name"},
-    --   { "String", "Highlight Group Name"},
-    --   ...
-    -- }
     formatter = function(diag)
         local u = require 'trld.utils'
 
@@ -65,5 +35,20 @@ use {'Mofiqul/trld.nvim'}
             {src, "Folded"},
         }
     end,
-  }
-```
+}
+
+-- config
+M.config = {}
+
+-- return bool indicating in config is valid
+M.validate_config = function(cfg)
+    -- TODO: implement config validation with vim.notify() logging
+    return true
+end
+
+-- override the default config with user configs
+M.override_config = function(cfg)
+    M.config = vim.tbl_deep_extend("force", M.default_config, cfg or {})
+end
+
+return M
