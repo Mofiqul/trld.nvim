@@ -15,26 +15,25 @@ M.default_config = {
 
         local msg = diag.message
         local src = diag.source
-        local code = tostring(diag.user_data.lsp.code)
+        local code = diag.user_data and diag.user_data.lsp and diag.user_data.lsp.code or nil
 
         -- remove dots
         msg = msg:gsub('%.', '')
         src = src:gsub('%.', '')
-        code = code:gsub('%.', '')
+        code = code and code:gsub('%.', '')
 
         -- remove starting and trailing spaces
         msg = msg:gsub('[ \t]+%f[\r\n%z]', '')
         src = src:gsub('[ \t]+%f[\r\n%z]', '')
-        code = code:gsub('[ \t]+%f[\r\n%z]', '')
+        code = code and code:gsub('[ \t]+%f[\r\n%z]', '')
 
         return {
-            {msg, u.get_hl_by_serverity(diag.severity)},
-            {' ', ""},
-            {code, "Comment"},
-            {' ', ""},
-            {src, "Folded"},
+            {msg..' ', u.get_hl_by_serverity(diag.severity)},
+            {code and code..' ' or '', "Comment"},
+            {src..' ', "Folded"},
         }
     end,
+
 }
 
 -- config
