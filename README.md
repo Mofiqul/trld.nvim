@@ -45,7 +45,7 @@ use {'Mofiqul/trld.nvim'}
 
         local msg = diag.message
         local src = diag.source
-        local code = diag.user_data.lsp.code
+        local code = tostring(diag.user_data.lsp.code)
 
         -- remove dots
         msg = msg:gsub('%.', '')
