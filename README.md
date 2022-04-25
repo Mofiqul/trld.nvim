@@ -67,3 +67,9 @@ use {'Mofiqul/trld.nvim'}
     end,
   }
 ```
+
+### You should also disable the neovim default diagnostics virtual text in your config
+
+```lua
+vim.diagnostic.config({ virtual_text = false })
+``` 
