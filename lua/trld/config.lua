@@ -6,32 +6,25 @@ M.default_config = {
     auto_cmds = true,
     highlights = {
         error = "DiagnosticFloatingError",
-        warn =  "DiagnosticFloatingWarn",
-        info =  "DiagnosticFloatingInfo",
-        hint =  "DiagnosticFloatingHint",
+        warn = "DiagnosticFloatingWarn",
+        info = "DiagnosticFloatingInfo",
+        hint = "DiagnosticFloatingHint",
     },
     formatter = function(diag)
         local u = require 'trld.utils'
-        local wininfo = vim.fn.getwininfo(vim.fn.win_getid())[1]
-        local msg = string.sub(diag.message, 1, wininfo.width)
-        local src = diag.source
-        local code = diag.user_data and diag.user_data.lsp and diag.user_data.lsp.code or nil
+        local diag_lines = {}
 
-        -- remove dots
-        --msg = msg:gsub('%.', '')
-        src = src:gsub('%.', '')
-        code = code and code:gsub('%.', '')
+        for line in diag.message:gmatch("[^\n]+") do
+            line = line:gsub('[ \t]+%f[\r\n%z]', '')
+            table.insert(diag_lines, line)
+        end
 
-        -- remove starting and trailing spaces
-        msg = msg:gsub('[ \t]+%f[\r\n%z]', '')
-        src = src:gsub('[ \t]+%f[\r\n%z]', '')
-        code = code and code:gsub('[ \t]+%f[\r\n%z]', '')
+        local lines = {}
+        for _, diag_line in ipairs(diag_lines) do
+            table.insert(lines, { { diag_line .. ' ', u.get_hl_by_serverity(diag.severity) } })
+        end
 
-        return {
-            {msg..' ', u.get_hl_by_serverity(diag.severity)},
-            {code and code..' ' or '', "Comment"},
-            {src..' ', "Folded"},
-        }
+        return lines
     end,
 
 }
