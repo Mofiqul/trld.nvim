@@ -12,13 +12,13 @@ M.default_config = {
     },
     formatter = function(diag)
         local u = require 'trld.utils'
-
-        local msg = diag.message
+        local wininfo = vim.fn.getwininfo(vim.fn.win_getid())[1]
+        local msg = string.sub(diag.message, 1, wininfo.width)
         local src = diag.source
         local code = diag.user_data and diag.user_data.lsp and diag.user_data.lsp.code or nil
 
         -- remove dots
-        msg = msg:gsub('%.', '')
+        --msg = msg:gsub('%.', '')
         src = src:gsub('%.', '')
         code = code and code:gsub('%.', '')
 
