@@ -32,20 +32,24 @@ M.display_diagnostics = function(diags, bufnr, ns, pos)
 
     -- render each diag
     for i, diag in ipairs(diags) do
-        local x = nil
-        if (pos == 'top') then
-            x = (win_info.topline - 3) + (i + 1)
-            if win_info.botline < x then return end
-        elseif (pos == 'bottom') then
-            x = (win_info.botline) - (i + 1)
-            if win_info.topline > x then return end
-        end
 
-        vim.api.nvim_buf_set_extmark(bufnr, ns, x, 0, {
-            virt_text = c.config.formatter(diag),
-            virt_text_pos = "right_align",
-            virt_lines_above = true,
-        })
+        local msgs = c.config.formatter(diag)
+        for j, msg in ipairs(msgs) do
+            local x = nil
+            if (pos == 'top') then
+                x = (win_info.topline - 3) + (i + j)
+                if win_info.botline < x then return end
+            elseif (pos == 'bottom') then
+                x = (win_info.botline) - (i + j)
+                if win_info.topline > x then return end
+            end
+            vim.api.nvim_buf_set_extmark(bufnr, ns, x, 0, {
+                virt_text = msg,
+                virt_text_pos = "right_align",
+                virt_lines_above = true,
+                strict = false
+            })
+        end
     end
 end
 

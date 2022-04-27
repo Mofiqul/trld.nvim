@@ -35,35 +35,26 @@ use {'Mofiqul/trld.nvim'}
 
     -- diagnostics formatter. must return
     -- {
-    --   { "String", "Highlight Group Name"},
-    --   { "String", "Highlight Group Name"},
-    --   { "String", "Highlight Group Name"},
+    --   {{ "String", "Highlight Group Name"}},
+    --   {{ "String", "Highlight Group Name"}},
+    --   {{ "String", "Highlight Group Name"}},
     --   ...
     -- }
     formatter = function(diag)
         local u = require 'trld.utils'
+        local diag_lines = {}
 
-        local msg = diag.message
-        local src = diag.source
-        local code = tostring(diag.user_data.lsp.code)
+        for line in diag.message:gmatch("[^\n]+") do
+            line = line:gsub('[ \t]+%f[\r\n%z]', '')
+            table.insert(diag_lines, line)
+        end
 
-        -- remove dots
-        msg = msg:gsub('%.', '')
-        src = src:gsub('%.', '')
-        code = code:gsub('%.', '')
+        local lines = {}
+        for _, diag_line in ipairs(diag_lines) do
+            table.insert(lines, { { diag_line .. ' ', u.get_hl_by_serverity(diag.severity) } })
+        end
 
-        -- remove starting and trailing spaces
-        msg = msg:gsub('[ \t]+%f[\r\n%z]', '')
-        src = src:gsub('[ \t]+%f[\r\n%z]', '')
-        code = code:gsub('[ \t]+%f[\r\n%z]', '')
-
-        return {
-            {msg, u.get_hl_by_serverity(diag.severity)},
-            {' ', ""},
-            {code, "Comment"},
-            {' ', ""},
-            {src, "Folded"},
-        }
+        return lines
     end,
   }
 ```
